@@ -1,24 +1,27 @@
-// Agac.hpp
 #ifndef AGAC_HPP
 #define AGAC_HPP
 
-#include "Dugum.hpp"
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <iomanip>
 
 class Agac {
 public:
-    Dugum* kok; // Ağacın kök düğümü
+    struct Dugum {
+        char deger;
+        Dugum* sol;
+        Dugum* sag;
 
-    // Constructor
+        Dugum(char deger) : deger(deger), sol(nullptr), sag(nullptr) {}
+    };
+
+    Dugum* kok;
+
     Agac() : kok(nullptr) {}
 
-    // Ağaca düğüm ekleme fonksiyonu
     void dugumEkle(char deger);
-
-    // Ağacın toplam değerini hesaplama
     int agacDegeriHesapla();
-
-private:
-    int hesapla(Dugum* dugum, bool solVarmi); // Recursive hesaplama fonksiyonu
 };
 
-#endif
+#endif // AGAC_HPP

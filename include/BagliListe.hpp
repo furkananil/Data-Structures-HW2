@@ -1,4 +1,3 @@
-// BagliListe.hpp
 #ifndef BAGLILISTE_HPP
 #define BAGLILISTE_HPP
 
@@ -17,7 +16,7 @@ public:
     Node* bas; // Listenin başlangıcı
 
     // Constructor
-    BagliListe() : bas(nullptr) {}
+    BagliListe() : bas(nullptr), uzunluk(0) {}
 
     // Listeye yeni ağaç ekleme
     void agacEkle(Agac* yeniAgac);
@@ -25,8 +24,14 @@ public:
     // Listeyi yazdırma
     void listeyiYazdir();
 
+    // Liste uzunluğunu döndürme
+    int size() const;
+
+    // Belirli bir indeksteki ağacı döndürme
+    Agac* getAgac(int index) const;
+
 private:
-    void yazdir(Node* node); // Recursive yazdırma fonksiyonu
+    int uzunluk;
 };
 
-#endif
+#endif // BAGLILISTE_HPP

@@ -1,6 +1,5 @@
 #include "BagliListe.hpp"
 #include <iostream>
-#include <iomanip>
 
 void BagliListe::agacEkle(Agac* yeniAgac) {
     Node* yeniNode = new Node(yeniAgac);
@@ -13,18 +12,26 @@ void BagliListe::agacEkle(Agac* yeniAgac) {
         }
         temp->sonraki = yeniNode;
     }
+    uzunluk++;
 }
 
 void BagliListe::listeyiYazdir() {
-    yazdir(bas);
+    Node* temp = bas;
+    while (temp != nullptr) {
+        std::cout << "Agac: " << temp->agac->agacDegeriHesapla() << std::endl;
+        temp = temp->sonraki;
+    }
 }
 
-void BagliListe::yazdir(Node* node) {
-    if (node == nullptr) return;
+int BagliListe::size() const {
+    return uzunluk;
+}
 
-    std::cout << "Adres: " << node << "\n";
-    std::cout << "Deger: " << node->agac->agacDegeriHesapla() <<"\n";
-    std::cout << "Sonraki: " << node->sonraki << "\n\n";
-
-    yazdir(node->sonraki);
+Agac* BagliListe::getAgac(int index) const {
+    if (index < 0 || index >= uzunluk) return nullptr;
+    Node* temp = bas;
+    for (int i = 0; i < index; ++i) {
+        temp = temp->sonraki;
+    }
+    return temp->agac;
 }

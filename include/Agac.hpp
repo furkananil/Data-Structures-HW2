@@ -22,6 +22,8 @@ public:
 
     void dugumEkle(char deger);
     int agacDegeriHesapla();
+private:
+    int hesapla(Dugum* dugum, bool solVarmi);
 };
 
 #endif // AGAC_HPP

@@ -45,7 +45,7 @@ void yazdirAgacBilgileri(BagliListe* agacListesi, int index, int sayfa) {
         currentIndex++;
     }
     std::cout << "\n";
-    
+
     // Ağacın değerlerini yazdır
     currentNode = agacListesi->bas;
     currentIndex = 0;
@@ -77,7 +77,7 @@ void yazdirAgacBilgileri(BagliListe* agacListesi, int index, int sayfa) {
             if (currentNode->sonraki != nullptr) {
                 std::cout << ". " << std::setw(5) << std::right << (reinterpret_cast<uintptr_t>(currentNode->sonraki->agac->kok) & 0xFFFF) << ".   ";
             } else {
-                std::cout << ".   Yok.";
+                std::cout << ".     0.";
             }
         }
         currentNode = currentNode->sonraki;
@@ -131,18 +131,33 @@ void yazdirAgacBilgileri(BagliListe* agacListesi, int index, int sayfa) {
 
 void listeyiGez(BagliListe* agacListesi) {
     BagliListe::Node* currentNode = agacListesi->bas;
+    BagliListe::Node* oncekiNode = nullptr;
+    BagliListe::Node* sonDugum = nullptr;
     int index = 0;
     int sayfa = 0;
+
+    // Son düğümü bul
+    if (agacListesi->bas != nullptr) {
+        sonDugum = agacListesi->bas;
+        while (sonDugum->sonraki != nullptr) {
+            sonDugum = sonDugum->sonraki;
+        }
+    }
 
     while (true) {
         system("cls"); // Ekranı temizle
         yazdirAgacBilgileri(agacListesi, index, sayfa);
 
+        if (currentNode == nullptr) {
+            std::cout << "Liste bos.\n";
+            break;
+        }
+
         std::cout << "Indeks: " << index << "\n";
         std::cout << "Adres: " << (reinterpret_cast<uintptr_t>(currentNode->agac->kok) & 0xFFFF) << "\n";
         std::cout << "Deger: " << currentNode->agac->agacDegeriHesapla() << "\n";
 
-        std::cout << "Secim (a: sola git, d: saga git, q: cikis): ";
+        std::cout << "Secim (a: sola git, d: saga git, s: sil, q: cikis): ";
         char ch = _getch();
         std::cout << ch << "\n"; // Kullanıcının seçimini göster
 
@@ -151,9 +166,11 @@ void listeyiGez(BagliListe* agacListesi) {
             char enter = _getch();
             if (enter == '\r') {
                 if (index < (sayfa + 1) * MAX_DUGUM - 1 && currentNode->sonraki != nullptr) {
+                    oncekiNode = currentNode;
                     currentNode = currentNode->sonraki;
                     index++;
                 } else if (index == (sayfa + 1) * MAX_DUGUM - 1 && currentNode->sonraki != nullptr) {
+                    oncekiNode = currentNode;
                     currentNode = currentNode->sonraki;
                     index++;
                     sayfa++;
@@ -165,17 +182,82 @@ void listeyiGez(BagliListe* agacListesi) {
             if (enter == '\r') {
                 if (index > sayfa * MAX_DUGUM) {
                     currentNode = agacListesi->bas;
+                    oncekiNode = nullptr;
                     for (int i = 0; i < index - 1; ++i) {
+                        oncekiNode = currentNode;
                         currentNode = currentNode->sonraki;
                     }
                     index--;
                 } else if (index == sayfa * MAX_DUGUM && sayfa > 0) {
                     currentNode = agacListesi->bas;
+                    oncekiNode = nullptr;
                     for (int i = 0; i < index - 1; ++i) {
+                        oncekiNode = currentNode;
                         currentNode = currentNode->sonraki;
                     }
                     index--;
                     sayfa--;
+                }
+            }
+        } else if (ch == 's' || ch == 'S') {
+            std::cout << "Enter'a basın: ";
+            char enter = _getch();
+            if (enter == '\r') {
+                if (agacListesi->bas == nullptr) {
+                    std::cout << "Liste zaten boş!\n";
+                    return;
+                }
+
+                BagliListe::Node* silinecekNode = currentNode;
+
+                // Eğer sadece tek bir düğüm varsa
+                if (currentNode == sonDugum && currentNode == agacListesi->bas) {
+                    agacListesi->bas = nullptr;
+                    sonDugum = nullptr;
+                    currentNode = nullptr;
+                    oncekiNode = nullptr;
+                    index = 0;
+                }
+                // Eğer son düğüm siliniyorsa
+                else if (currentNode == sonDugum) {
+                    BagliListe::Node* temp = agacListesi->bas;
+                    while (temp->sonraki != sonDugum) {
+                        temp = temp->sonraki;
+                    }
+                    temp->sonraki = nullptr;
+                    sonDugum = temp;
+                    currentNode = temp;
+                    index--;
+                }
+                // Ara düğüm siliniyorsa
+                else {
+                    if (oncekiNode != nullptr) {
+                        oncekiNode->sonraki = currentNode->sonraki;
+                        currentNode = currentNode->sonraki;
+                    } else { // Eğer baş düğüm siliniyorsa
+                        agacListesi->bas = currentNode->sonraki;
+                        currentNode = agacListesi->bas;
+                    }
+                }
+
+                // Bellek serbest bırakma
+                delete silinecekNode->agac;
+                delete silinecekNode;
+
+                // Sayfa ayarlaması
+                if (index < sayfa * MAX_DUGUM) {
+                    sayfa--;
+                }
+                if (index < 0) {
+                    index = 0;
+                }
+
+                // Liste boşsa, tüm referansları sıfırla
+                if (agacListesi->bas == nullptr) {
+                    currentNode = nullptr;
+                    oncekiNode = nullptr;
+                    sonDugum = nullptr;
+                    std::cout << "Liste tamamen boşaltıldı.\n";
                 }
             }
         } else if (ch == 'q' || ch == 'Q') {

@@ -72,7 +72,7 @@ void Agac::gosterLevel(Agac::Dugum* p, int level, int d) {
     int disp = 2 * d;
     if (level == 0) {
         if (p == NULL) {
-            std::cout << " X ";
+            std::cout << " 1 ";
             std::cout << std::setw(disp - 3) << "";
             return;
         } else {
@@ -97,6 +97,9 @@ void Agac::AGACYAZDIR() {
         yazdirLevel(i);
         i++;
         std::cout << std::endl;
+        if (i <= height(getroot())) {
+            std::cout << std::endl << std::endl << std::endl;
+        }
     }
 }
 

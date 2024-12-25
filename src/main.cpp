@@ -195,9 +195,6 @@ void listeyiGez(BagliListe* agacListesi) {
         std::cout << "Secim (a: sola git, d: saga git, s: sil, w: aynala, q: cikis): ";
         char ch = _getch();
         std::cout << ch << "\n"; // Kullanıcının seçimini göster
-
-        // Enter tuşuna basılmasını bekle
-        std::cout << "Enter'a basın: ";
         char enter = _getch();
         if (enter == '\r') {
             if (ch == 'd' || ch == 'D') {
@@ -232,7 +229,7 @@ void listeyiGez(BagliListe* agacListesi) {
                 }
             } else if (ch == 's' || ch == 'S') {
                 if (agacListesi->bas == nullptr) {
-                    std::cout << "Liste zaten boş!\n";
+                    std::cout << "Liste zaten bos!\n";
                     return;
                 }
 
@@ -285,7 +282,7 @@ void listeyiGez(BagliListe* agacListesi) {
                     currentNode = nullptr;
                     oncekiNode = nullptr;
                     sonDugum = nullptr;
-                    std::cout << "Liste tamamen boşaltıldı.\n";
+                    std::cout << "Liste tamamen bosaltildi.\n";
                 }
             } else if (ch == 'w' || ch == 'W') {
                 currentNode->agac->ayna(currentNode->agac->getroot());

@@ -100,3 +100,15 @@ void Agac::AGACYAZDIR() {
     }
 }
 
+void Agac::ayna(Dugum* dugum) {
+    if (dugum == nullptr) return;
+
+    // Sol ve sağ çocukları değiştir
+    Dugum* temp = dugum->sol;
+    dugum->sol = dugum->sag;
+    dugum->sag = temp;
+
+    // Alt ağaçları aynala
+    ayna(dugum->sol);
+    ayna(dugum->sag);
+}

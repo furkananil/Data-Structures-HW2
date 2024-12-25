@@ -26,6 +26,7 @@ public:
     void yazdirLevel(int n);
     void gosterLevel(Dugum*p, int level, int d);
     void AGACYAZDIR();
+    void ayna(Dugum* dugum);
 private:
     int hesapla(Dugum* dugum, bool solVarmi);
 };

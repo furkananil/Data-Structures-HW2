@@ -8,6 +8,38 @@
 
 const int MAX_DUGUM = 10;
 
+void yazdirAgacBilgileri(BagliListe* agacListesi, int index, int sayfa);
+void listeyiGez(BagliListe* agacListesi);
+
+int main() {
+    BagliListe agacListesi;
+
+    std::ifstream dosya("agaclar.txt");
+    if (!dosya.is_open()) {
+        std::cerr << "Dosya acilmadi!\n";
+        return 1;
+    }
+
+    std::string satir;
+    while (std::getline(dosya, satir)) {
+        Agac* yeniAgac = new Agac();
+        for (char karakter : satir) {
+            yeniAgac->dugumEkle(karakter);
+        }
+        agacListesi.agacEkle(yeniAgac);
+    }
+
+    dosya.close();
+
+    // Ağaç bilgilerini yazdırma
+    yazdirAgacBilgileri(&agacListesi, 0, 0);
+
+    // Listeyi gezme
+    listeyiGez(&agacListesi);
+
+    return 0;
+}
+
 void yazdirAgacBilgileri(BagliListe* agacListesi, int index, int sayfa) {
     BagliListe::Node* currentNode = agacListesi->bas;
     int currentIndex = 0;
@@ -77,7 +109,7 @@ void yazdirAgacBilgileri(BagliListe* agacListesi, int index, int sayfa) {
             if (currentNode->sonraki != nullptr) {
                 std::cout << ". " << std::setw(5) << std::right << (reinterpret_cast<uintptr_t>(currentNode->sonraki->agac->kok) & 0xFFFF) << ".   ";
             } else {
-                std::cout << ".     0.";
+                std::cout << ".   Yok.";
             }
         }
         currentNode = currentNode->sonraki;
@@ -157,14 +189,18 @@ void listeyiGez(BagliListe* agacListesi) {
         std::cout << "Adres: " << (reinterpret_cast<uintptr_t>(currentNode->agac->kok) & 0xFFFF) << "\n";
         std::cout << "Deger: " << currentNode->agac->agacDegeriHesapla() << "\n";
 
-        std::cout << "Secim (a: sola git, d: saga git, s: sil, q: cikis): ";
+        // Seçili düğümün ağacını yazdır
+        currentNode->agac->AGACYAZDIR();
+
+        std::cout << "\n";
+        std::cout << "secim...: ";
         char ch = _getch();
         std::cout << ch << "\n"; // Kullanıcının seçimini göster
 
-        if (ch == 'd' || ch == 'D') {
-            std::cout << "Enter'a basın: ";
-            char enter = _getch();
-            if (enter == '\r') {
+        // Enter tuşuna basılmasını bekle
+        char enter = _getch();
+        if (enter == '\r') {
+            if (ch == 'd' || ch == 'D') {
                 if (index < (sayfa + 1) * MAX_DUGUM - 1 && currentNode->sonraki != nullptr) {
                     oncekiNode = currentNode;
                     currentNode = currentNode->sonraki;
@@ -175,11 +211,7 @@ void listeyiGez(BagliListe* agacListesi) {
                     index++;
                     sayfa++;
                 }
-            }
-        } else if (ch == 'a' || ch == 'A') {
-            std::cout << "Enter'a basın: ";
-            char enter = _getch();
-            if (enter == '\r') {
+            } else if (ch == 'a' || ch == 'A') {
                 if (index > sayfa * MAX_DUGUM) {
                     currentNode = agacListesi->bas;
                     oncekiNode = nullptr;
@@ -198,13 +230,9 @@ void listeyiGez(BagliListe* agacListesi) {
                     index--;
                     sayfa--;
                 }
-            }
-        } else if (ch == 's' || ch == 'S') {
-            std::cout << "Enter'a basın: ";
-            char enter = _getch();
-            if (enter == '\r') {
+            } else if (ch == 's' || ch == 'S') {
                 if (agacListesi->bas == nullptr) {
-                    std::cout << "Liste zaten boş!\n";
+                    std::cout << "Liste zaten bos!\n";
                     return;
                 }
 
@@ -257,40 +285,11 @@ void listeyiGez(BagliListe* agacListesi) {
                     currentNode = nullptr;
                     oncekiNode = nullptr;
                     sonDugum = nullptr;
-                    std::cout << "Liste tamamen boşaltıldı.\n";
+                    std::cout << "Liste tamamen bosaltildi.\n";
                 }
+            } else if (ch == 'q' || ch == 'Q') {
+                break;
             }
-        } else if (ch == 'q' || ch == 'Q') {
-            break;
         }
     }
-}
-
-int main() {
-    BagliListe agacListesi;
-
-    std::ifstream dosya("agaclar.txt");
-    if (!dosya.is_open()) {
-        std::cerr << "Dosya acilmadi!\n";
-        return 1;
-    }
-
-    std::string satir;
-    while (std::getline(dosya, satir)) {
-        Agac* yeniAgac = new Agac();
-        for (char karakter : satir) {
-            yeniAgac->dugumEkle(karakter);
-        }
-        agacListesi.agacEkle(yeniAgac);
-    }
-
-    dosya.close();
-
-    // Ağaç bilgilerini yazdırma
-    yazdirAgacBilgileri(&agacListesi, 0, 0);
-
-    // Listeyi gezme
-    listeyiGez(&agacListesi);
-
-    return 0;
 }

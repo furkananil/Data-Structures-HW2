@@ -33,5 +33,4 @@ public:
 private:
     int uzunluk;
 };
-
 #endif // BAGLILISTE_HPP

@@ -17,7 +17,7 @@ EXEC = $(BIN_DIR)/main
 
 # Default target
 all: $(EXEC)
-	$(EXEC)  # Programı çalıştır
+	$(EXEC) 
 
 # Link all object files into the executable
 $(EXEC): $(OBJS)
